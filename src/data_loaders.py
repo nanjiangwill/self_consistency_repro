@@ -94,7 +94,7 @@ def load_strategyqa(sample_size: Optional[int] = None) -> Tuple[List[str], List[
     Returns:
         Tuple of (questions, answers)
     """
-    dataset = load_dataset("metaeval/strategy-qa", split="test")
+    dataset = load_dataset("metaeval/strategy-qa", split="train")
     
     if sample_size is not None:
         dataset = dataset.select(range(min(sample_size, len(dataset))))
@@ -124,7 +124,8 @@ def load_arc_challenge(sample_size: Optional[int] = None) -> Tuple[List[str], Li
     for item in dataset:
         question = item["question"]
         choices = item["choices"]
-        choices_text = "\n".join([f"({choice['label']}) {choice['text']}" for choice in choices])
+        # Format is different for ARC dataset
+        choices_text = "\n".join([f"({choices['label'][i]}) {choices['text'][i]}" for i in range(len(choices['label']))])
         questions.append(f"{question}\n{choices_text}")
     
     answers = [item["answerKey"] for item in dataset]
@@ -151,6 +152,7 @@ def load_commonsenseqa(sample_size: Optional[int] = None) -> Tuple[List[str], Li
     for item in dataset:
         question = item["question"]
         choices = item["choices"]
+        # Format is different for CommonsenseQA dataset
         choices_text = "\n".join([f"({choice['label']}) {choice['text']}" for choice in choices])
         questions.append(f"{question}\n{choices_text}")
     

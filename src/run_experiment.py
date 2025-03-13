@@ -74,11 +74,11 @@ def run_experiment(
     # Set default answer pattern based on dataset
     if answer_pattern is None:
         if dataset_name in ["strategyqa"]:
-            answer_pattern = r"The answer is (yes|no)\."
+            answer_pattern = r"The answer is (yes|no)\.?"
         elif dataset_name in ["arc_challenge", "commonsenseqa"]:
-            answer_pattern = r"The answer is \(([A-E])\)\."
+            answer_pattern = r"The answer is \(([A-E])\)\.?"
         else:
-            answer_pattern = r"The answer is (.*?)\."
+            answer_pattern = r"The answer is (.*?)\.?"
     
     # Load dataset
     print(f"Loading {dataset_name} dataset...")
@@ -137,6 +137,16 @@ def run_experiment(
     print(f"Greedy CoT Accuracy: {results['greedy_accuracy']:.4f}")
     print(f"Self-Consistency Accuracy: {results['sc_accuracy']:.4f}")
     print(f"Improvement: {results['improvement']:.4f}")
+    
+    # Print detailed results for the first few examples
+    print("\nDetailed results for the first few examples:")
+    for i, result in enumerate(results['results'][:3]):
+        print(f"\nExample {i+1}:")
+        print(f"Question: {result['prompt'].split('Q:')[-1].split('A:')[0].strip()}")
+        print(f"Ground Truth: {result['ground_truth']}")
+        print(f"Greedy Answer: {result['greedy_answer']}")
+        print(f"Self-Consistency Answers: {result['sc_answers']}")
+        print(f"Self-Consistency Majority: {result['sc_majority']}")
     
     return results
 

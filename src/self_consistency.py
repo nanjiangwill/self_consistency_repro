@@ -79,7 +79,8 @@ class SelfConsistency:
         Returns:
             Tuple of (full_generation, extracted_answer)
         """
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        # Tokenize with truncation to handle long inputs
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
         
         with torch.no_grad():
             outputs = self.model.generate(
@@ -106,7 +107,8 @@ class SelfConsistency:
         Returns:
             Tuple of (full_generation, extracted_answer)
         """
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        # Tokenize with truncation to handle long inputs
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
         
         with torch.no_grad():
             outputs = self.model.generate(
@@ -187,8 +189,19 @@ class SelfConsistency:
             sc_result = self.generate_self_consistency(prompt)
             
             # Check if answers are correct
-            greedy_correct = greedy_answer.strip() == gt.strip()
-            sc_correct = sc_result["majority_answer"].strip() == gt.strip()
+            # Normalize answers for comparison
+            greedy_norm = greedy_answer.strip().lower()
+            sc_norm = sc_result["majority_answer"].strip().lower()
+            gt_norm = gt.strip().lower()
+            
+            # Handle yes/no vs true/false
+            if gt_norm == "true":
+                gt_norm = "yes"
+            elif gt_norm == "false":
+                gt_norm = "no"
+            
+            greedy_correct = greedy_norm == gt_norm
+            sc_correct = sc_norm == gt_norm
             
             if greedy_correct:
                 correct_greedy += 1
