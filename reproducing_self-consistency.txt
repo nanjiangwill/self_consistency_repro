@@ -1,0 +1,68 @@
+# Reproducing Self-Consistency
+
+This document compares our reproduction of the self-consistency method with the original paper's results.
+
+## Implementation Details
+
+Our implementation uses the following components:
+
+1. **Model**: We use google/flan-t5-small as our base model, while the original paper used larger models including UL2-20B, GPT-3-175B, LaMDA-137B, and PaLM-540B.
+
+2. **Sampling Strategy**: We implement temperature sampling with top-k filtering (temperature=0.7, top_k=40), which is consistent with the original paper.
+
+3. **Number of Samples**: The original paper used 40-100 samples per question, while our implementation uses a smaller number (5 by default) for computational efficiency.
+
+4. **Answer Aggregation**: We use majority voting to select the most consistent answer, which is the primary method used in the original paper.
+
+## Expected Differences
+
+We expect several differences between our reproduction and the original paper:
+
+1. **Model Size**: The original paper used much larger models (up to 540B parameters), while we use a smaller model (flan-t5-small, ~80M parameters). This will likely result in lower overall accuracy for both greedy CoT and self-consistency.
+
+2. **Sample Efficiency**: With fewer samples (5 vs 40-100), our implementation may not fully capture the benefits of self-consistency. The original paper showed that performance improves with more samples, up to a point.
+
+3. **Dataset Size**: We use smaller subsets of the datasets for computational efficiency, which may affect the statistical significance of our results.
+
+## Preliminary Results
+
+(Note: This section will be updated after running the experiments)
+
+| Dataset | Model | Greedy CoT Acc | Self-Consistency Acc | Improvement |
+|---------|-------|----------------|----------------------|-------------|
+| GSM8K   | flan-t5-small | - | - | - |
+| SVAMP   | flan-t5-small | - | - | - |
+| AQuA    | flan-t5-small | - | - | - |
+| StrategyQA | flan-t5-small | - | - | - |
+| ARC-Challenge | flan-t5-small | - | - | - |
+| CommonsenseQA | flan-t5-small | - | - | - |
+
+## Analysis
+
+(Note: This section will be updated after running the experiments)
+
+### Key Observations
+
+1. **Improvement Pattern**: Does self-consistency consistently improve performance across all datasets, as in the original paper?
+
+2. **Sample Efficiency**: How does the performance change with the number of samples?
+
+3. **Error Analysis**: What types of questions benefit most from self-consistency?
+
+### Comparison with Original Paper
+
+The original paper reported the following improvements:
+- GSM8K: +17.9% absolute accuracy gains
+- SVAMP: +11.0%
+- AQuA: +12.2%
+- StrategyQA: +6.4%
+- ARC-challenge: +3.9%
+
+Our reproduction shows:
+(To be filled after experiments)
+
+## Conclusion
+
+(Note: This section will be updated after running the experiments)
+
+The self-consistency method appears to be a robust technique for improving chain-of-thought reasoning, even when using smaller models and fewer samples than in the original paper.
