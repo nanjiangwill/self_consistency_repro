@@ -6,7 +6,7 @@ This document compares our reproduction of the self-consistency method with the 
 
 Our implementation uses the following components:
 
-1. **Model**: We use google/flan-t5-small as our base model, while the original paper used larger models including UL2-20B, GPT-3-175B, LaMDA-137B, and PaLM-540B.
+1. **Model**: We use meta-llama/Llama-3.2-3B-Instruct as our base model, while the original paper used larger models including UL2-20B, GPT-3-175B, LaMDA-137B, and PaLM-540B.
 
 2. **Sampling Strategy**: We implement temperature sampling with top-k filtering (temperature=0.7, top_k=40), which is consistent with the original paper.
 
@@ -67,7 +67,7 @@ Our implementation successfully demonstrates the core concept of the self-consis
 For more complex reasoning tasks like GSM8K and ARC-Challenge, larger models would likely be needed to see meaningful improvements. The original paper used models with billions of parameters (UL2-20B, GPT-3-175B, LaMDA-137B, and PaLM-540B), while we used a much smaller model (flan-t5-small, ~80M parameters).
 
 Future work could include:
-1. Scaling up to larger models like flan-t5-xl or llama-3.2-1B
+1. Scaling up to larger models like flan-t5-xl or llama-3.2-3B
 2. Increasing the number of samples per question to improve robustness
 3. Testing on a wider range of datasets and larger test sets
 4. Exploring variations of the self-consistency method, such as weighted voting based on the model's confidence

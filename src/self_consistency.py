@@ -10,8 +10,9 @@ import torch
 import numpy as np
 from typing import List, Dict, Any, Tuple, Optional, Union
 from collections import Counter
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import re
+from tqdm import tqdm
 
 
 class SelfConsistency:
@@ -21,8 +22,8 @@ class SelfConsistency:
     
     def __init__(
         self, 
-        model_name: str = "google/flan-t5-small",
-        device: str = "cpu",
+        model_name: str = "meta-llama/Llama-3.2-3B-Instruct",
+        device: str = "cuda:5",
         max_new_tokens: int = 512,
         temperature: float = 0.7,
         top_k: int = 40,
@@ -50,7 +51,7 @@ class SelfConsistency:
         self.answer_pattern = answer_pattern
         
         # Load model and tokenizer
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name)
         self.model.to(device)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
     
@@ -64,11 +65,18 @@ class SelfConsistency:
         Returns:
             Extracted answer or empty string if no answer found
         """
-        match = re.search(self.answer_pattern, text)
-        if match:
-            return match.group(1).strip()
-        return ""
-    
+        # match = re.search(self.answer_pattern, text)
+        # if match:
+        #     return match.group(1).strip()
+        # return ""
+        if "The answer is" in text:
+            text_tmp = text.split("The answer is")[1]
+            text_tmp = text_tmp.split(".")[0]
+            text_tmp = text_tmp.strip()
+            return text_tmp
+        else:
+            return ""
+
     def generate_cot_sample(self, prompt: str) -> Tuple[str, str]:
         """
         Generate a single chain-of-thought reasoning sample.
@@ -80,21 +88,22 @@ class SelfConsistency:
             Tuple of (full_generation, extracted_answer)
         """
         # Tokenize with truncation to handle long inputs
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=2048).to(self.device)
         
         with torch.no_grad():
             outputs = self.model.generate(
                 **inputs,
                 max_new_tokens=self.max_new_tokens,
+                tokenizer=self.tokenizer,
                 do_sample=True,
                 temperature=self.temperature,
                 top_k=self.top_k,
-                pad_token_id=self.tokenizer.eos_token_id
+                pad_token_id=self.tokenizer.eos_token_id,
+                stop_strings=["Q:",]
             )
         
-        generation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        generation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)[len(prompt):]
         answer = self.extract_answer(generation)
-        
         return generation, answer
     
     def generate_cot_greedy(self, prompt: str) -> Tuple[str, str]:
@@ -108,17 +117,21 @@ class SelfConsistency:
             Tuple of (full_generation, extracted_answer)
         """
         # Tokenize with truncation to handle long inputs
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=2048).to(self.device)
         
         with torch.no_grad():
             outputs = self.model.generate(
                 **inputs,
                 max_new_tokens=self.max_new_tokens,
+                tokenizer=self.tokenizer,
                 do_sample=False,
-                pad_token_id=self.tokenizer.eos_token_id
+                temperature=1.0,
+                top_p=1.0,
+                pad_token_id=self.tokenizer.eos_token_id,
+                stop_strings=["Q:"]
             )
         
-        generation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        generation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)[len(prompt):]
         answer = self.extract_answer(generation)
         
         return generation, answer
@@ -140,8 +153,8 @@ class SelfConsistency:
         samples = []
         answers = []
         
-        # Generate multiple samples
-        for _ in range(self.num_samples):
+        # Generate multiple samples with progress bar
+        for _ in tqdm(range(self.num_samples), desc="Generating samples", leave=False):
             generation, answer = self.generate_cot_sample(prompt)
             samples.append(generation)
             answers.append(answer)
@@ -181,7 +194,8 @@ class SelfConsistency:
         correct_greedy = 0
         correct_sc = 0
         
-        for i, (prompt, gt) in enumerate(zip(prompts, ground_truth)):
+        # Add progress bar for evaluation
+        for i, (prompt, gt) in enumerate(tqdm(zip(prompts, ground_truth), total=len(prompts), desc="Evaluating prompts")):
             # Generate greedy baseline
             greedy_gen, greedy_answer = self.generate_cot_greedy(prompt)
             

@@ -46,13 +46,14 @@ def format_prompts(questions: List[str], prompt_template: str) -> List[str]:
 
 def run_experiment(
     dataset_name: str,
-    model_name: str = "google/flan-t5-small",
+    model_name: str = "meta-llama/Llama-3.2-3B-Instruct",
     device: str = "cpu",
     sample_size: int = 5,
     num_samples: int = 5,
     temperature: float = 0.7,
     top_k: int = 40,
-    max_new_tokens: int = 512,
+    top_p: float = 0.9,
+    max_new_tokens: int = 2048,
     output_dir: str = "../results",
     answer_pattern: Optional[str] = None
 ):
@@ -156,11 +157,11 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="gsm8k", 
                         choices=["gsm8k", "svamp", "aqua", "strategyqa", "arc_challenge", "commonsenseqa"],
                         help="Dataset to use")
-    parser.add_argument("--model", type=str, default="google/flan-t5-small",
+    parser.add_argument("--model", type=str, default="meta-llama/Llama-3.2-3B-Instruct",
                         help="Model to use")
     parser.add_argument("--device", type=str, default="cpu",
                         help="Device to run the model on")
-    parser.add_argument("--sample_size", type=int, default=5,
+    parser.add_argument("--sample_size", type=int, default=None,
                         help="Number of examples to sample from the dataset")
     parser.add_argument("--num_samples", type=int, default=5,
                         help="Number of reasoning paths to sample")
@@ -168,7 +169,9 @@ if __name__ == "__main__":
                         help="Temperature for sampling")
     parser.add_argument("--top_k", type=int, default=40,
                         help="Top-k for sampling")
-    parser.add_argument("--max_new_tokens", type=int, default=1024,
+    parser.add_argument("--top_p", type=float, default=0.9,
+                        help="Top-p for sampling")
+    parser.add_argument("--max_new_tokens", type=int, default=2048,
                         help="Maximum number of tokens to generate")
     parser.add_argument("--output_dir", type=str, default="../results",
                         help="Directory to save results")

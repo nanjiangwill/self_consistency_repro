@@ -153,9 +153,8 @@ def load_commonsenseqa(sample_size: Optional[int] = None) -> Tuple[List[str], Li
         question = item["question"]
         choices = item["choices"]
         # Format is different for CommonsenseQA dataset
-        choices_text = "\n".join([f"({choice['label']}) {choice['text']}" for choice in choices])
+        choices_text = "\n".join([f"({choices['label'][i]}) {choices['text'][i]}" for i in range(len(choices['label']))])
         questions.append(f"{question}\n{choices_text}")
     
-    answers = [item["answerKey"] for item in dataset]
-    
+    answers = [f"({item['answerKey']})".strip() for item in dataset]
     return questions, answers

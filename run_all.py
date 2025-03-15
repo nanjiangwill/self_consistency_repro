@@ -18,7 +18,7 @@ DATASETS = [
 ]
 
 def run_all_experiments(
-    model_name: str = "google/flan-t5-small",
+    model_name: str = "meta-llama/Llama-3.2-3B-Instruct",
     device: str = "cpu",
     sample_size: int = 5,
     num_samples: int = 5,
@@ -59,7 +59,7 @@ def run_all_experiments(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run all self-consistency experiments")
-    parser.add_argument("--model", type=str, default="google/flan-t5-small",
+    parser.add_argument("--model", type=str, default="meta-llama/Llama-3.2-3B-Instruct",
                         help="Model to use")
     parser.add_argument("--device", type=str, default="cpu",
                         help="Device to run the model on")

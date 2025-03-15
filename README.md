@@ -46,12 +46,12 @@ pip install -r requirements.txt
 To run an experiment on a single dataset:
 
 ```bash
-python src/run_experiment.py --dataset gsm8k --model google/flan-t5-small --sample_size 5 --num_samples 5
+python src/run_experiment.py --dataset gsm8k --model meta-llama/Llama-3.2-3B-Instruct --sample_size 5 --num_samples 5
 ```
 
 Arguments:
 - `--dataset`: Dataset to use (choices: gsm8k, svamp, aqua, strategyqa, arc_challenge, commonsenseqa)
-- `--model`: Model to use (default: google/flan-t5-small)
+- `--model`: Model to use (default: meta-llama/Llama-3.2-3B-Instruct)
 - `--device`: Device to run the model on (default: cpu)
 - `--sample_size`: Number of examples to sample from the dataset (default: 5)
 - `--num_samples`: Number of reasoning paths to sample (default: 5)
@@ -65,7 +65,7 @@ Arguments:
 To run experiments on all datasets:
 
 ```bash
-python run_all.py --model google/flan-t5-small --sample_size 5 --num_samples 5
+python run_all.py --model meta-llama/Llama-3.2-3B-Instruct --sample_size 5 --num_samples 5
 ```
 
 ### Visualizing Results
@@ -97,7 +97,7 @@ The original paper reported significant improvements across all datasets:
 - StrategyQA: +6.4%
 - ARC-challenge: +3.9%
 
-Our reproduction aims to verify these results using the google/flan-t5-small model.
+Our reproduction aims to verify these results using the meta-llama/Llama-3.2-3B-Instruct model.
 
 ## Citation
 

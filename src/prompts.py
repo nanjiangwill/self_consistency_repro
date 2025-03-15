@@ -27,7 +27,7 @@ Q: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, h
 A: Michael initially had 58 balls. He lost 23 on Tuesday, so after that he has 58 - 23 = 35 balls. On Wednesday he lost 2 more so now he has 35 - 2 = 33 balls. The answer is 33.
 
 Q: {question}
-A:"""
+A: """
 
 # SVAMP prompt
 SVAMP_PROMPT = """
@@ -47,7 +47,7 @@ Q: There were nine computers in the server room. Five more computers were instal
 A: There were 9 computers in the server room. For each day from monday to thursday, 5 more computers were installed. So 5 * 4 = 20 computers were added. Now there are 9 + 20 = 29 computers. The answer is 29.
 
 Q: {question}
-A:"""
+A: """
 
 # AQuA prompt
 AQUA_PROMPT = """
@@ -64,7 +64,7 @@ Q: If a fair coin is tossed 4 times, what is the probability of getting exactly 
 A: When a fair coin is tossed 4 times, there are 2^4 = 16 possible outcomes. To get exactly 3 heads, we need to choose which 3 of the 4 tosses will be heads. This is C(4,3) = 4. So the probability is 4/16 = 1/4. The answer is 1/4.
 
 Q: {question}
-A:"""
+A: """
 
 # StrategyQA prompt
 STRATEGYQA_PROMPT = """
@@ -81,7 +81,7 @@ Q: Yes or no: Is it common to see frost during some college commencements?
 A: College commencement ceremonies typically happen in May or June, which is late spring or early summer in the Northern Hemisphere. Frost is uncommon during these months in most of the United States. However, some colleges in very cold regions or high altitudes might have frost even in late spring. So while it's not common, it can happen at some college commencements. The answer is yes.
 
 Q: {question}
-A:"""
+A: """
 
 # ARC-Challenge prompt
 ARC_CHALLENGE_PROMPT = """
@@ -110,7 +110,7 @@ Q: A student riding on a train moving at a constant velocity drops a ball. Which
 A: From the perspective of someone on the train (the student), objects inside the train share the same reference frame. When the student drops the ball, both the student and the ball are moving at the same velocity as the train. Since there's no horizontal force acting on the ball relative to the train, the ball will appear to fall straight down from the student's perspective. The answer is (A).
 
 Q: {question}
-A:"""
+A: """
 
 # CommonsenseQA prompt
 COMMONSENSEQA_PROMPT = """
@@ -142,4 +142,4 @@ Q: The fox walked from the city into the forest, what was it looking for?
 A: Foxes are wild animals that naturally live in forests, which is their natural habitat. When a fox moves from a city (an unnatural environment for it) to a forest, it's likely seeking its natural habitat. While foxes might be interested in hen houses for food, and forests are indeed dense, the most fundamental thing it would be seeking is its natural environment. Pretty flowers and storybooks are not things foxes would seek. The answer is (C).
 
 Q: {question}
-A:"""
+A: """
